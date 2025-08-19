@@ -49,7 +49,15 @@ export default function HishabPage() {
   const [perWeightCost, setPerWeightCost] = useState("");
   const [paymentType, setPaymentType] = useState<'CASH' | 'CARD' | 'MOBILE_BANKING' | 'BANK_TRANSFER'>('CASH');
   const [costingType, setCostingType] = useState<'WEIGHT' | 'QUANTITY'>('QUANTITY');
-  const [costingDate, setCostingDate] = useState(new Date().toISOString().split('T')[0]);
+  const [costingDate, setCostingDate] = useState(new Date().toLocaleDateString('en-CA'));
+//   const [costingDate, setCostingDate] = useState(() => {
+//   const today = new Date();
+//   const year = today.getFullYear();
+//   const month = String(today.getMonth() + 1).padStart(2, '0'); // months are 0-based
+//   const day = String(today.getDate()).padStart(2, '0');
+//   return `${year}-${month}-${day}`;
+// });
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [paymentTypeFilter, setPaymentTypeFilter] = useState<string>('ALL');
 
@@ -169,7 +177,7 @@ export default function HishabPage() {
         setPerWeightCost("");
         setPaymentType('CASH');
         setCostingType('QUANTITY');
-        setCostingDate(new Date().toISOString().split('T')[0]);
+        setCostingDate(new Date().toLocaleDateString('en-CA'));
         setShowAddExpense(false);
       } else {
         console.error("Failed to create cost:", response.message);
