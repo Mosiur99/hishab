@@ -16,6 +16,7 @@ public class CreateCostRequest {
     private PaymentType paymentType;
     private CostingType costingType;
     private Date costingDate;
+    private String description;
 
     public CreateCostRequest() {
     }
@@ -110,5 +111,13 @@ public class CreateCostRequest {
 
     public void setCostingDate(Date costingDate) {
         this.costingDate = costingDate;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

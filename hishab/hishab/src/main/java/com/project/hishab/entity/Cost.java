@@ -67,6 +67,9 @@ public class Cost {
     @Column(name = "updated")
     private Date updated;
 
+    @Column(name = "description", length = 500)
+    private String description;
+
     public Long getId() {
         return id;
     }
@@ -177,5 +180,13 @@ public class Cost {
 
     public void setCostingType(CostingType costingType) {
         this.costingType = costingType;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

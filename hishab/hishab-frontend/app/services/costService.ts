@@ -7,7 +7,8 @@ export interface CreateCostRequest {
   perWeightCost?: number;
   paymentType: 'CASH' | 'CARD' | 'MOBILE_BANKING' | 'BANK_TRANSFER';
   costingType: 'WEIGHT' | 'QUANTITY';
-  costingDate: string; // ISO date string
+  costingDate: string;
+  description: string;
 }
 
 export interface CostSummary {

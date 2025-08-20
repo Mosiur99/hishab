@@ -50,14 +50,7 @@ export default function HishabPage() {
   const [paymentType, setPaymentType] = useState<'CASH' | 'CARD' | 'MOBILE_BANKING' | 'BANK_TRANSFER'>('CASH');
   const [costingType, setCostingType] = useState<'WEIGHT' | 'QUANTITY'>('QUANTITY');
   const [costingDate, setCostingDate] = useState(new Date().toLocaleDateString('en-CA'));
-//   const [costingDate, setCostingDate] = useState(() => {
-//   const today = new Date();
-//   const year = today.getFullYear();
-//   const month = String(today.getMonth() + 1).padStart(2, '0'); // months are 0-based
-//   const day = String(today.getDate()).padStart(2, '0');
-//   return `${year}-${month}-${day}`;
-// });
-
+  const [description, setDescription] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [paymentTypeFilter, setPaymentTypeFilter] = useState<string>('ALL');
 
@@ -89,35 +82,6 @@ export default function HishabPage() {
           setStats(costSummaryResponse);
         }
 
-        // Mock expenses data for demonstration
-        const mockExpenses: Expense[] = [
-          { id: 1, amount: 25.50, description: "Lunch", category: "Food", date: "2024-01-15", paymentType: "CASH", costingType: "QUANTITY" },
-          { id: 2, amount: 15.00, description: "Coffee", category: "Food", date: "2024-01-15", paymentType: "CARD", costingType: "QUANTITY" },
-          { id: 3, amount: 50.00, description: "Gas", category: "Transport", date: "2024-01-14", paymentType: "CASH", costingType: "WEIGHT" },
-          { id: 4, amount: 1200.00, description: "Rent", category: "Housing", date: "2024-01-01", paymentType: "BANK_TRANSFER", costingType: "QUANTITY" },
-          { id: 5, amount: 80.00, description: "Shopping", category: "Shopping", date: "2024-01-13", paymentType: "MOBILE_BANKING", costingType: "QUANTITY" },
-        ];
-        setExpenses(mockExpenses);
-
-        // Calculate stats
-        const today = new Date().toISOString().split('T')[0];
-        const todayTotal = mockExpenses
-          .filter(exp => exp.date === today)
-          .reduce((sum, exp) => sum + exp.amount, 0);
-        
-        const currentMonth = new Date().getMonth();
-        const monthTotal = mockExpenses
-          .filter(exp => new Date(exp.date).getMonth() === currentMonth)
-          .reduce((sum, exp) => sum + exp.amount, 0);
-
-        const categoryCounts = mockExpenses.reduce((acc, exp) => {
-          acc[exp.category] = (acc[exp.category] || 0) + 1;
-          return acc;
-        }, {} as Record<string, number>);
-
-        const topCategory = Object.entries(categoryCounts)
-          .sort(([,a], [,b]) => b - a)[0]?.[0] || "None";
-
       } catch (error) {
         console.error("Failed to fetch data:", error);
       } finally {
@@ -147,27 +111,13 @@ export default function HishabPage() {
         perWeightCost: perWeightCost ? parseFloat(perWeightCost) : undefined,
         paymentType,
         costingType,
-        costingDate
+        costingDate,
+        description
       };
 
       const response = await CostService.createCost(costRequest);
       
       if (response.result) {
-        // Create a new expense entry for display
-        const selectedItem = items.find(i => i.id === itemId);
-        
-        const newExpense: Expense = {
-          id: expenses.length + 1,
-          amount: parseFloat(totalCost),
-          description: selectedItem?.name || "Unknown Item",
-          category: selectedItem?.categoryType || "Unknown",
-          date: costingDate,
-          paymentType: paymentType,
-          costingType: costingType
-        };
-
-        setExpenses(prev => [newExpense, ...prev]);
-        
         // Reset form
         setItemId(null);
         setQuantity("");
@@ -179,6 +129,7 @@ export default function HishabPage() {
         setCostingType('QUANTITY');
         setCostingDate(new Date().toLocaleDateString('en-CA'));
         setShowAddExpense(false);
+        setDescription("");
       } else {
         console.error("Failed to create cost:", response.message);
         alert("Failed to create cost entry: " + response.message);
@@ -190,7 +141,7 @@ export default function HishabPage() {
     } finally {
       setIsSubmitting(false);
     }
-  }, [itemId, quantity, perUnitCost, totalCost, weight, perWeightCost, paymentType, costingType, costingDate, isSubmitting, items, expenses]);
+  }, [itemId, quantity, perUnitCost, totalCost, weight, perWeightCost, paymentType, costingType, costingDate, isSubmitting, items, expenses, description]);
 
   // Calculate total cost automatically
   useEffect(() => {
@@ -350,6 +301,20 @@ export default function HishabPage() {
                 </select>
               </div>
 
+              <div>
+                <label htmlFor="costingType" className="label">Costing Type *</label>
+                <select
+                  id="costingType"
+                  className="input"
+                  value={costingType}
+                  onChange={(e) => setCostingType(e.target.value as 'WEIGHT' | 'QUANTITY')}
+                  required
+                >
+                  <option value="QUANTITY">By Quantity</option>
+                  <option value="WEIGHT">By Weight</option>
+                </select>
+              </div>
+
               {costingType === 'QUANTITY' ? (
                 <div className="grid grid-cols-2 gap-4">
                   <div>
@@ -429,20 +394,6 @@ export default function HishabPage() {
               </div>
 
               <div>
-                <label htmlFor="costingType" className="label">Costing Type *</label>
-                <select
-                  id="costingType"
-                  className="input"
-                  value={costingType}
-                  onChange={(e) => setCostingType(e.target.value as 'WEIGHT' | 'QUANTITY')}
-                  required
-                >
-                  <option value="QUANTITY">By Quantity</option>
-                  <option value="WEIGHT">By Weight</option>
-                </select>
-              </div>
-
-              <div>
                 <label htmlFor="paymentType" className="label">Purchase Type *</label>
                 <select
                   id="paymentType"
@@ -467,6 +418,17 @@ export default function HishabPage() {
                   value={costingDate}
                   onChange={(e) => setCostingDate(e.target.value)}
                   required
+                />
+              </div>
+
+              <div>
+                <label htmlFor="description" className="label">Description</label>
+                <input
+                  id="description"
+                  type="text"
+                  className="input"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
                 />
               </div>
 

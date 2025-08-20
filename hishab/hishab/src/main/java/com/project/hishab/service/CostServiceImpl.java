@@ -126,6 +126,7 @@ public class CostServiceImpl implements CostService {
             cost.setCostingType(request.getCostingType());
             cost.setCostingDate(request.getCostingDate());
             cost.setCreated(new Date());
+            cost.setDescription(request.getDescription());
 
             // Save cost
             costRepository.save(cost);
