@@ -199,9 +199,10 @@ public class CostServiceImpl implements CostService {
         List<String> topCategories = costRepository.getTopCategoryForMonth(userId, year, month);
         String topCategory = topCategories != null && !topCategories.isEmpty() ? topCategories.get(0) : null;
 
-        List<Object[]> rows = costRepository.getDailyTotalsForMonth(userId, year, month);
+        List<Object[]> rows = costRepository.getDailyTotalsAndItemsForMonth(userId, year, month);
         List<DailyTotalDTO> dailyTotals = rows.stream()
-                .map(r -> new DailyTotalDTO((String) r[0], r[1] != null ? ((Number) r[1]).doubleValue() : 0.0))
+                .map(r -> new DailyTotalDTO((String) r[0],
+                        r[1] != null ? ((Number) r[1]).doubleValue() : 0.0, (String) r[2]))
                 .toList();
 
         MonthlyReportResponse response = new MonthlyReportResponse();

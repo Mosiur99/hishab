@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import React from "react";
 import { useRouter } from "next/navigation";
 import { AuthService } from "../services/authService";
 import { CostService, MonthlyReport } from "../services/costService";
@@ -96,9 +97,24 @@ export default function MonthlyReportPage() {
             ) : (
               <div className="space-y-2">
                 {report.dailyTotals.map(row => (
-                  <div key={row.date} className="flex justify-between border-b pb-2">
-                    <span>{row.date}</span>
-                    <span className="font-semibold">Tk. {row.total.toFixed(2)}</span>
+                  <div
+                    key={row.date}
+                    className="grid grid-cols-3 border-b pb-2 items-start"
+                  >
+                    <span className="text-gray-800">{row.date}</span>
+
+                    <span className="text-gray-700">
+                      {row.itemsWithCost.split("&").map((item, idx, arr) => (
+                        <React.Fragment key={idx}>
+                          {item.trim()}
+                          {idx < arr.length - 1 && <br />}
+                        </React.Fragment>
+                      ))}
+                    </span>
+
+                    <span className="font-semibold text-right">
+                      Tk. {row.total.toFixed(2)}
+                    </span>
                   </div>
                 ))}
               </div>

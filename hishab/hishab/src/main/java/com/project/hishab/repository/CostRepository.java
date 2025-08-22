@@ -90,7 +90,8 @@ public interface CostRepository extends JpaRepository<Cost, Long> {
 
     @Query(value = """
     SELECT to_char(costing_date, 'YYYY-MM-DD') as day,
-           SUM(total_cost) as total
+           SUM(total_cost) as total, 
+           STRING_AGG(CONCAT((SELECT name FROM item WHERE id = item_id), ' - ', total_cost), '&') AS itemsWithCost
     FROM cost
     WHERE user_id = :userId
       AND EXTRACT(YEAR FROM costing_date) = :year
@@ -98,9 +99,9 @@ public interface CostRepository extends JpaRepository<Cost, Long> {
     GROUP BY day
     ORDER BY day
 """, nativeQuery = true)
-    List<Object[]> getDailyTotalsForMonth(@Param("userId") Long userId,
-                                          @Param("year") int year,
-                                          @Param("month") int month);
+    List<Object[]> getDailyTotalsAndItemsForMonth(@Param("userId") Long userId,
+                                                  @Param("year") int year,
+                                                  @Param("month") int month);
 
     @Query(value = """
     SELECT COALESCE(SUM(total_cost), 0)

@@ -4,12 +4,14 @@ public class DailyTotalDTO {
 
 	private String date;
 	private Double total;
+	private String itemsWithCost;
 
 	public DailyTotalDTO() {}
 
-	public DailyTotalDTO(String date, Double total) {
+	public DailyTotalDTO(String date, Double total, String itemsWithCost) {
 		this.date = date;
 		this.total = total;
+		this.itemsWithCost = itemsWithCost;
 	}
 
 	public String getDate() {
@@ -26,6 +28,14 @@ public class DailyTotalDTO {
 
 	public void setTotal(Double total) {
 		this.total = total;
+	}
+
+	public String getItemsWithCost() {
+		return itemsWithCost;
+	}
+
+	public void setItemsWithCost(String itemsWithCost) {
+		this.itemsWithCost = itemsWithCost;
 	}
 }
 

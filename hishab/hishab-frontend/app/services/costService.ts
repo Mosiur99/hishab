@@ -29,6 +29,7 @@ export interface ActionResponse {
 export interface DailyTotalDTO {
   date: string;
   total: number;
+  itemsWithCost: string;
 }
 
 export interface MonthlyReport {

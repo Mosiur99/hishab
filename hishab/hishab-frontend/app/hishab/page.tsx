@@ -141,7 +141,19 @@ export default function HishabPage() {
     } finally {
       setIsSubmitting(false);
     }
-  }, [itemId, quantity, perUnitCost, totalCost, weight, perWeightCost, paymentType, costingType, costingDate, isSubmitting, items, expenses, description]);
+  }, [itemId,
+     quantity,
+     perUnitCost,
+     totalCost, 
+     weight, 
+     perWeightCost, 
+     paymentType,
+     costingType, 
+     costingDate, 
+     isSubmitting, 
+     items, 
+     expenses, 
+     description]);
 
   // Calculate total cost automatically
   useEffect(() => {
